@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  super_admin
+  admin
+}
+
+enum AccountStatus {
+  pending
+  awaiting_verification
+  approved
+  rejected
+}
+
+enum StockStatus {
+  tersedia
+  belum_tersedia
+}
+
+enum ProductionSystem {
+  pre_order
+  ready_stock
+}
+
+model User {
+  id                          String        @id @default(uuid())
+  name                        String
+  email                       String        @unique
+  password                    String
+  role                        Role          @default(admin)
+  status                      AccountStatus @default(pending)
+  registrationToken           String        @unique @map("registration_token")
+  verificationCodeHash        String?       @map("verification_code_hash")
+  verificationCodeExpiresAt   DateTime?     @map("verification_code_expires_at")
+  verificationAttempts        Int           @default(0) @map("verification_attempts")
+  createdAt                   DateTime      @default(now()) @map("created_at")
+  updatedAt                   DateTime      @updatedAt @map("updated_at")
+  products                    Product[]
+
+  @@map("users")
+}
+
+model Category {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  products  Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id                     String           @id @default(uuid())
+  name                   String
+  imageUrl               String           @map("image_url")
+  imagePublicId          String?          @map("image_public_id")
+  stockStatus            StockStatus      @map("stock_status")
+  categoryId             String           @map("category_id")
+  whatsappNumber         String           @map("whatsapp_number")
+  description            String           @db.Text
+  ownerName              String           @map("owner_name")
+  productionSystem       ProductionSystem @map("production_system")
+  netWeight              String           @map("net_weight")
+  price                  Decimal          @db.Decimal(12, 2)
+  flavorVariants         Json             @map("flavor_variants")
+  composition            String           @db.Text
+  nibNumber              String?          @map("nib_number")
+  halalCertificateNumber String?          @map("halal_certificate_number")
+  createdBy              String           @map("created_by")
+  createdAt              DateTime         @default(now()) @map("created_at")
+  updatedAt              DateTime         @updatedAt @map("updated_at")
+
+  category Category @relation(fields: [categoryId], references: [id])
+  creator  User     @relation(fields: [createdBy], references: [id])
+
+  @@map("products")
+}

@@ -1,6 +1,15 @@
+node_modules/
+dist/
+src/generated/
+.env
+.env*.local
+coverage/
+.DS_Store
+*.log
+
 # .gitignore
 E-Katalog UMKM Desa Pasiragung Software Development Life Cycle (SDLC).md
 E-Katalog UMKM Desa Pasiragung Software Requirements Specification (SRS).md
 E-Katalog UMKMDesa Pasiragung Product Requirements Document (PRD).md
 analysis_report.md
-
+project-log.md
