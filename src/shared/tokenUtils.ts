@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import { env } from "../config/env.js";
+import type { StringValue } from "ms";
 
 interface JwtPayload {
   userId: string;
@@ -9,7 +10,7 @@ interface JwtPayload {
 
 export const signToken = (payload: JwtPayload): string => {
   return jwt.sign(payload, env.JWT_SECRET, {
-    expiresIn: env.JWT_EXPIRES_IN,
+    expiresIn: env.JWT_EXPIRES_IN as StringValue,
   });
 };
 
