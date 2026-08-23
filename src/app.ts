@@ -11,11 +11,11 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Apply general rate limiter to all /api routes
-app.use("/api", generalLimiter);
+// Apply general rate limiter to all /api/v1 routes
+app.use("/api/v1", generalLimiter);
 
 // Routes
-app.use("/api", routes);
+app.use("/api/v1", routes);
 
 // Global Error Handler
 app.use(errorHandler);
