@@ -14,3 +14,29 @@ export const getAllAdmins = async (req: Request, res: Response, next: NextFuncti
     next(error);
   }
 };
+
+export const approveAdmin = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const user = await adminService.updateAdminStatus(id, "approved");
+    return res.status(200).json({ success: true, message: "Admin approved successfully", data: user });
+  } catch (error: any) {
+    if (error.code === 'P2025') {
+      return res.status(404).json({ success: false, message: "Admin not found" });
+    }
+    next(error);
+  }
+};
+
+export const rejectAdmin = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const user = await adminService.updateAdminStatus(id, "rejected");
+    return res.status(200).json({ success: true, message: "Admin rejected successfully", data: user });
+  } catch (error: any) {
+    if (error.code === 'P2025') {
+      return res.status(404).json({ success: false, message: "Admin not found" });
+    }
+    next(error);
+  }
+};

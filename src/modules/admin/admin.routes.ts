@@ -9,5 +9,7 @@ router.use(authMiddleware);
 router.use(requireRole("super_admin"));
 
 router.get("/users", adminController.getAllAdmins);
+router.patch("/users/:id/approve", adminController.approveAdmin);
+router.patch("/users/:id/reject", adminController.rejectAdmin);
 
 export { router as adminRoutes };

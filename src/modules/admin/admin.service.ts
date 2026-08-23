@@ -20,3 +20,17 @@ export const getAllAdmins = async (skip: number, limit: number) => {
 
   return { users, totalItems };
 };
+
+export const updateAdminStatus = async (id: string, status: "approved" | "rejected") => {
+  return prisma.user.update({
+    where: { id },
+    data: { status },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      status: true
+    }
+  });
+};
