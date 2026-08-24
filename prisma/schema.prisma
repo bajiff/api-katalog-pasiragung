@@ -74,12 +74,12 @@ model Product {
   composition            String           @db.Text
   nibNumber              String?          @map("nib_number")
   halalCertificateNumber String?          @map("halal_certificate_number")
-  createdBy              String           @map("created_by")
+  createdBy              String?          @map("created_by")
   createdAt              DateTime         @default(now()) @map("created_at")
   updatedAt              DateTime         @updatedAt @map("updated_at")
 
   category Category @relation(fields: [categoryId], references: [id])
-  creator  User     @relation(fields: [createdBy], references: [id])
+  creator  User?    @relation(fields: [createdBy], references: [id], onDelete: SetNull)
 
   @@map("products")
 }

@@ -140,3 +140,13 @@ export const getMe = async (userId: string) => {
   if (!user) throw new Error("User not found");
   return { user };
 };
+
+export const deleteMyAccount = async (userId: string) => {
+  // Karena schema sudah diset onDelete: SetNull pada Product.createdBy,
+  // kita cukup menghapus user-nya saja.
+  await prisma.user.delete({
+    where: { id: userId },
+  });
+
+  return { message: "Account deleted successfully" };
+};

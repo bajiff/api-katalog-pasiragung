@@ -11,5 +11,6 @@ router.use(requireRole("super_admin"));
 router.get("/users", adminController.getAllAdmins);
 router.patch("/users/:id/approve", adminController.approveAdmin);
 router.patch("/users/:id/reject", adminController.rejectAdmin);
+router.delete("/users/:id", adminController.deleteUser);
 
 export { router as adminRoutes };

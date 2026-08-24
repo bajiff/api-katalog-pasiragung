@@ -72,3 +72,13 @@ export const getMe = async (req: Request, res: Response, next: NextFunction) => 
     next(error);
   }
 };
+
+export const deleteMe = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userId = req.user!.userId;
+    const result = await authService.deleteMyAccount(userId);
+    return successResponse(res, result);
+  } catch (error: any) {
+    next(error);
+  }
+};

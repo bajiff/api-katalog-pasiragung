@@ -34,3 +34,11 @@ export const updateAdminStatus = async (id: string, status: "approved" | "reject
     }
   });
 };
+
+export const deleteAdminAccount = async (id: string) => {
+  await prisma.user.delete({
+    where: { id },
+  });
+
+  return { message: "Admin account deleted successfully" };
+};

@@ -40,3 +40,16 @@ export const rejectAdmin = async (req: Request, res: Response, next: NextFunctio
     next(error);
   }
 };
+
+export const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const result = await adminService.deleteAdminAccount(id);
+    return res.status(200).json({ success: true, message: result.message });
+  } catch (error: any) {
+    if (error.code === 'P2025') {
+      return res.status(404).json({ success: false, message: "Admin not found" });
+    }
+    next(error);
+  }
+};
