@@ -40,6 +40,9 @@ model User {
   verificationCodeHash        String?       @map("verification_code_hash")
   verificationCodeExpiresAt   DateTime?     @map("verification_code_expires_at")
   verificationAttempts        Int           @default(0) @map("verification_attempts")
+  resetPasswordCodeHash       String?       @map("reset_password_code_hash")
+  resetPasswordCodeExpiresAt  DateTime?     @map("reset_password_code_expires_at")
+  resetPasswordAttempts       Int           @default(0) @map("reset_password_attempts")
   createdAt                   DateTime      @default(now()) @map("created_at")
   updatedAt                   DateTime      @updatedAt @map("updated_at")
   products                    Product[]

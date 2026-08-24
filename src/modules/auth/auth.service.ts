@@ -1,7 +1,7 @@
 import { prisma } from "../../config/prisma.js";
 import { hashPassword, comparePassword, hashVerificationCode, compareVerificationCode } from "../../shared/hashUtils.js";
 import { generateRegistrationToken, generateVerificationCode, signToken } from "../../shared/tokenUtils.js";
-import { sendVerificationEmail } from "../../shared/emailService.js";
+import { sendVerificationEmail, sendPasswordResetEmail } from "../../shared/emailService.js";
 import { env } from "../../config/env.js";
 
 export const register = async (data: any) => {
@@ -149,4 +149,84 @@ export const deleteMyAccount = async (userId: string) => {
   });
 
   return { message: "Account deleted successfully" };
+};
+
+export const updateMe = async (userId: string, data: { name: string }) => {
+  const user = await prisma.user.update({
+    where: { id: userId },
+    data: { name: data.name },
+    select: { id: true, name: true, email: true, role: true, status: true },
+  });
+  return { user };
+};
+
+export const forgotPassword = async (email: string) => {
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) throw new Error("If the email is registered, a reset code will be sent."); // Silent error to prevent enumeration
+
+  if (user.status !== "approved") throw new Error("Account is not approved.");
+
+  // Check cooldown for forgot password
+  if (
+    user.resetPasswordCodeExpiresAt &&
+    user.resetPasswordCodeExpiresAt > new Date() &&
+    user.resetPasswordAttempts < env.VERIFICATION_MAX_ATTEMPTS
+  ) {
+    throw new Error("Current reset code is still valid. Please wait before requesting a new one.");
+  }
+
+  const newCode = generateVerificationCode();
+  const codeHash = hashVerificationCode(newCode);
+  const expiresAt = new Date(Date.now() + env.VERIFICATION_CODE_EXPIRY_MINUTES * 60 * 1000);
+
+  // Send email first
+  await sendPasswordResetEmail(user.email, newCode);
+
+  // Update DB
+  await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      resetPasswordCodeHash: codeHash,
+      resetPasswordCodeExpiresAt: expiresAt,
+      resetPasswordAttempts: 0,
+    },
+  });
+
+  return { message: "If the email is registered, a reset code will be sent." };
+};
+
+export const resetPassword = async (data: any) => {
+  const user = await prisma.user.findUnique({ where: { email: data.email } });
+  
+  if (!user) throw new Error("Invalid reset code or email");
+  
+  if (user.resetPasswordAttempts >= env.VERIFICATION_MAX_ATTEMPTS) {
+    throw new Error("Maximum reset attempts reached. Please request a new code.");
+  }
+  
+  if (!user.resetPasswordCodeExpiresAt || user.resetPasswordCodeExpiresAt < new Date()) {
+    throw new Error("Reset code has expired");
+  }
+  
+  if (!user.resetPasswordCodeHash || !compareVerificationCode(data.code, user.resetPasswordCodeHash)) {
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { resetPasswordAttempts: { increment: 1 } },
+    });
+    throw new Error("Invalid reset code");
+  }
+
+  const hashedPassword = await hashPassword(data.new_password);
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      password: hashedPassword,
+      resetPasswordCodeHash: null,
+      resetPasswordCodeExpiresAt: null,
+      // invalidate existing auth tokens by changing something? Since we use simple JWT, password change doesn't instantly revoke tokens unless we add token versioning.
+    },
+  });
+
+  return { message: "Password has been reset successfully. You can now login with your new password." };
 };

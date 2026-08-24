@@ -55,3 +55,27 @@ export const sendVerificationEmail = async (to: string, code: string) => {
     console.log("📨 Preview URL: %s", nodemailer.getTestMessageUrl(info));
   }
 };
+
+export const sendPasswordResetEmail = async (to: string, code: string) => {
+  if (!transporter) {
+    transporter = await createTransporter();
+  }
+
+  const info = await transporter.sendMail({
+    from: env.SMTP_FROM,
+    to,
+    subject: "Reset Kata Sandi - E-Katalog Pasiragung",
+    html: `
+      <h2>Reset Kata Sandi Admin</h2>
+      <p>Kami menerima permintaan untuk mereset kata sandi Anda. Silakan masukkan kode berikut:</p>
+      <h3 style="letter-spacing: 2px; padding: 10px; background-color: #f0f0f0; display: inline-block;">${code}</h3>
+      <p>Kode ini akan kedaluwarsa dalam ${env.VERIFICATION_CODE_EXPIRY_MINUTES} menit.</p>
+      <p>Jika Anda tidak meminta reset kata sandi, abaikan email ini.</p>
+    `,
+  });
+
+  if (env.NODE_ENV === "development") {
+    console.log("📨 Password Reset Message sent: %s", info.messageId);
+    console.log("📨 Preview URL: %s", nodemailer.getTestMessageUrl(info));
+  }
+};

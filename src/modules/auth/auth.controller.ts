@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import * as authService from "./auth.service.js";
-import { registerSchema, loginSchema, verifyCodeSchema } from "./auth.validation.js";
+import { registerSchema, loginSchema, verifyCodeSchema, updateProfileSchema, forgotPasswordSchema, resetPasswordSchema } from "./auth.validation.js";
 import { successResponse, errorResponse } from "../../shared/apiResponse.js";
 
 export const register = async (req: Request, res: Response, next: NextFunction) => {
@@ -80,5 +80,38 @@ export const deleteMe = async (req: Request, res: Response, next: NextFunction) 
     return successResponse(res, result);
   } catch (error: any) {
     next(error);
+  }
+};
+
+export const updateMe = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userId = req.user!.userId;
+    const validatedData = updateProfileSchema.parse(req.body);
+    const result = await authService.updateMe(userId, validatedData);
+    return successResponse(res, result);
+  } catch (error: any) {
+    next(error);
+  }
+};
+
+export const forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const validatedData = forgotPasswordSchema.parse(req.body);
+    const result = await authService.forgotPassword(validatedData.email);
+    return successResponse(res, result);
+  } catch (error: any) {
+    // If it throws an error like 'Account is not approved', we can catch it. 
+    // Otherwise, we shouldn't reveal if email exists.
+    return successResponse(res, { message: "If the email is registered, a reset code will be sent." });
+  }
+};
+
+export const resetPassword = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const validatedData = resetPasswordSchema.parse(req.body);
+    const result = await authService.resetPassword(validatedData);
+    return successResponse(res, result);
+  } catch (error: any) {
+    return errorResponse(res, error.message, 400);
   }
 };
