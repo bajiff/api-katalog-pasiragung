@@ -1,4 +1,8 @@
 import { prisma } from "../../config/prisma.js";
+import { generateVerificationCode } from "../../shared/tokenUtils.js";
+import { hashVerificationCode } from "../../shared/hashUtils.js";
+import { sendVerificationEmail } from "../../shared/emailService.js";
+import { env } from "../../config/env.js";
 
 export const getAllAdmins = async (skip: number, limit: number) => {
   const [users, totalItems] = await Promise.all([
@@ -22,6 +26,35 @@ export const getAllAdmins = async (skip: number, limit: number) => {
 };
 
 export const updateAdminStatus = async (id: string, status: "approved" | "rejected") => {
+  if (status === "approved") {
+    const user = await prisma.user.findUnique({ where: { id } });
+    if (!user) throw new Error("Admin not found");
+
+    const newCode = generateVerificationCode();
+    const codeHash = hashVerificationCode(newCode);
+    const expiresAt = new Date(Date.now() + env.VERIFICATION_CODE_EXPIRY_MINUTES * 60 * 1000);
+
+    const updatedUser = await prisma.user.update({
+      where: { id },
+      data: { 
+        status: "awaiting_verification",
+        verificationCodeHash: codeHash,
+        verificationCodeExpiresAt: expiresAt,
+        verificationAttempts: 0,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        status: true
+      }
+    });
+
+    await sendVerificationEmail(updatedUser.email, newCode);
+    return updatedUser;
+  }
+
   return prisma.user.update({
     where: { id },
     data: { status },
