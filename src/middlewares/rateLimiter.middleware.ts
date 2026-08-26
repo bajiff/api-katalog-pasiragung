@@ -10,6 +10,7 @@ export const generalLimiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
+  skip: () => env.NODE_ENV === "development",
 });
 
 export const authLimiter = rateLimit({
@@ -19,6 +20,7 @@ export const authLimiter = rateLimit({
     success: false,
     message: "Too many authentication attempts, please try again later.",
   },
+  skip: () => env.NODE_ENV === "development",
 });
 
 export const resendLimiter = rateLimit({
@@ -28,4 +30,5 @@ export const resendLimiter = rateLimit({
     success: false,
     message: "Too many resend attempts, please try again after an hour.",
   },
+  skip: () => env.NODE_ENV === "development",
 });
