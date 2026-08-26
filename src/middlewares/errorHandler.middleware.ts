@@ -18,6 +18,11 @@ export const errorHandler = (
     return errorResponse(res, "Unauthorized", 401);
   }
 
+  // Handle JSON SyntaxError from body-parser (malformed JSON)
+  if (err instanceof SyntaxError && (err as any).status === 400 && "body" in err) {
+    return errorResponse(res, "Invalid JSON payload format", 400);
+  }
+
   // Fallback for unhandled errors
   return errorResponse(res, "Internal Server Error", 500, {
     message: process.env.NODE_ENV === "development" ? err.message : undefined,
