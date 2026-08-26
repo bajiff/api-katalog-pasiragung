@@ -1,7 +1,7 @@
 import { prisma } from "../../config/prisma.js";
 import { generateVerificationCode } from "../../shared/tokenUtils.js";
 import { hashVerificationCode } from "../../shared/hashUtils.js";
-import { sendVerificationEmail } from "../../shared/emailService.js";
+import { sendVerificationEmail, sendRejectionEmail } from "../../shared/emailService.js";
 import { env } from "../../config/env.js";
 
 export const getAllAdmins = async (skip: number, limit: number) => {
@@ -55,7 +55,7 @@ export const updateAdminStatus = async (id: string, status: "approved" | "reject
     return updatedUser;
   }
 
-  return prisma.user.update({
+  const updatedUser = await prisma.user.update({
     where: { id },
     data: { status },
     select: {
@@ -66,6 +66,11 @@ export const updateAdminStatus = async (id: string, status: "approved" | "reject
       status: true
     }
   });
+
+  // Kirim email notifikasi penolakan
+  await sendRejectionEmail(updatedUser.email);
+
+  return updatedUser;
 };
 
 export const deleteAdminAccount = async (id: string) => {

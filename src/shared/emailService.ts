@@ -79,3 +79,28 @@ export const sendPasswordResetEmail = async (to: string, code: string) => {
     console.log("📨 Preview URL: %s", nodemailer.getTestMessageUrl(info));
   }
 };
+
+export const sendRejectionEmail = async (to: string) => {
+  if (!transporter) {
+    transporter = await createTransporter();
+  }
+
+  const info = await transporter.sendMail({
+    from: env.SMTP_FROM,
+    to,
+    subject: "Pendaftaran Akun Ditolak - E-Katalog Pasiragung",
+    html: `
+      <h2>Pendaftaran Akun Admin Ditolak</h2>
+      <p>Mohon maaf, pendaftaran akun Anda pada sistem E-Katalog UMKM Desa Pasiragung tidak disetujui oleh Super Admin.</p>
+      <p>Jika Anda merasa ini adalah kesalahan atau ingin mendaftar ulang, silakan hubungi pihak pengelola desa untuk informasi lebih lanjut.</p>
+      <br>
+      <p>Salam,</p>
+      <p><strong>Tim E-Katalog Desa Pasiragung</strong></p>
+    `,
+  });
+
+  if (env.NODE_ENV === "development") {
+    console.log("📨 Rejection Email sent: %s", info.messageId);
+    console.log("📨 Preview URL: %s", nodemailer.getTestMessageUrl(info));
+  }
+};

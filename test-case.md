@@ -2,13 +2,49 @@
 
 > **Base URL:** `http://localhost:3000/api/v1`
 > **Tanggal dibuat:** 24 Agustus 2026
+> **Terakhir diperbarui:** 25 Agustus 2026
 >
 > Dokumen ini berisi seluruh test case untuk semua endpoint API yang tersedia.
 > Gunakan Postman atau tools serupa untuk mengujinya.
 
+## 📊 Ringkasan Status Implementasi
+
+| Modul | Endpoint | Status Kode | Status Testing |
+|-------|----------|-------------|----------------|
+| 🔐 Auth | A1. Register | ✅ Selesai | ⬜ Belum |
+| 🔐 Auth | A2. Cek Status | ✅ Selesai | ⬜ Belum |
+| 🔐 Auth | A3. Verifikasi Kode | ✅ Selesai | ⬜ Belum |
+| 🔐 Auth | A4. Resend Kode | ✅ Selesai | ⬜ Belum |
+| 🔐 Auth | A5. Login | ✅ Selesai | ⬜ Belum |
+| 🔐 Auth | A6. Get Me | ✅ Selesai | ⬜ Belum |
+| 🔐 Auth | A7. Edit Profil (Nama) | ✅ Selesai | ⬜ Belum |
+| 🔐 Auth | A8. Hapus Akun | ✅ Selesai | ⬜ Belum |
+| 🔐 Auth | A9. Lupa Kata Sandi | ✅ Selesai | ⬜ Belum |
+| 🔐 Auth | A10. Reset Kata Sandi | ✅ Selesai | ⬜ Belum |
+| 👤 Admin | B1. List Admin | ✅ Selesai | ⬜ Belum |
+| 👤 Admin | B2. Approve Admin | ✅ Selesai | ⬜ Belum |
+| 👤 Admin | B3. Reject Admin | ✅ Selesai | ⬜ Belum |
+| 👤 Admin | B4. Hapus Admin | ✅ Selesai | ⬜ Belum |
+| 📂 Kategori | C1. Lihat Semua | ✅ Selesai | ⬜ Belum |
+| 📂 Kategori | C2. Lihat By ID | ✅ Selesai | ⬜ Belum |
+| 📂 Kategori | C3. Buat Baru | ✅ Selesai | ⬜ Belum |
+| 📂 Kategori | C4. Update | ✅ Selesai | ⬜ Belum |
+| 📂 Kategori | C5. Hapus | ✅ Selesai | ⬜ Belum |
+| 📦 Produk | D1. Lihat Semua | ✅ Selesai | ⬜ Belum |
+| 📦 Produk | D2. Lihat By ID | ✅ Selesai | ⬜ Belum |
+| 📦 Produk | D3. Buat Baru | ✅ Selesai | ⬜ Belum |
+| 📦 Produk | D4. Update | ✅ Selesai | ⬜ Belum |
+| 📦 Produk | D5. Hapus | ✅ Selesai | ⬜ Belum |
+| 🛡️ Keamanan | E1. Tanpa Token | ✅ Selesai | ⬜ Belum |
+| 🛡️ Keamanan | E2. Token Rusak | ✅ Selesai | ⬜ Belum |
+| 🛡️ Keamanan | E3. Role Salah | ✅ Selesai | ⬜ Belum |
+| 🛡️ Keamanan | E4. Rate Limiting | ✅ Selesai | ⬜ Belum |
+
+> 💡 **Petunjuk:** Kolom "Status Kode" menandakan endpoint sudah diimplementasikan di kode. Kolom "Status Testing" bisa Anda ubah sendiri menjadi ✅ setelah berhasil di-test di Postman.
+
 ---
 
-## 🔐 A. Modul Auth (`/auth`)
+## 🔐 A. Modul Auth (`/auth`) — ✅ Semua Endpoint Sudah Diimplementasikan
 
 ### A1. Register Admin Baru
 | Item | Detail |
@@ -425,7 +461,7 @@
 
 ---
 
-## 👤 B. Modul Admin (`/admin`) — Khusus Super Admin
+## 👤 B. Modul Admin (`/admin`) — ✅ Semua Endpoint Sudah Diimplementasikan — Khusus Super Admin
 
 > ⚠️ **Semua endpoint di modul ini membutuhkan:**
 > - Authorization: Bearer Token
@@ -504,6 +540,8 @@
 | **Auth** | Bearer Token (Super Admin) |
 | **Body** | Kosong |
 
+> 📧 **Fitur Baru:** Aksi ini sekarang akan otomatis **mengirimkan email notifikasi penolakan** ke alamat email admin yang ditolak.
+
 **✅ Sukses (200):**
 ```json
 {
@@ -518,6 +556,7 @@
     }
 }
 ```
+> ✉️ **Verifikasi tambahan:** Setelah mendapat respon sukses, cek kotak masuk Gmail admin yang ditolak. Harus ada email berjudul **"Pendaftaran Akun Ditolak - E-Katalog Pasiragung"**.
 
 ---
 
@@ -544,7 +583,7 @@
 
 ---
 
-## 📂 C. Modul Kategori (`/categories`)
+## 📂 C. Modul Kategori (`/categories`) — ✅ Semua Endpoint Sudah Diimplementasikan
 
 > Endpoint **GET** (Read) bersifat publik (tidak perlu login).
 > Endpoint **POST/PATCH/DELETE** (Create/Update/Delete) membutuhkan Bearer Token `admin` atau `super_admin`.
@@ -686,7 +725,7 @@
 
 ---
 
-## 📦 D. Modul Produk (`/products`)
+## 📦 D. Modul Produk (`/products`) — ✅ Semua Endpoint Sudah Diimplementasikan
 
 > Endpoint **GET** (Read) bersifat publik (tidak perlu login).
 > Endpoint **POST/PATCH/DELETE** (Create/Update/Delete) membutuhkan Bearer Token `admin` atau `super_admin`.
@@ -862,7 +901,7 @@
 
 ---
 
-## 🛡️ E. Test Case Keamanan & Edge Case
+## 🛡️ E. Test Case Keamanan & Edge Case — ✅ Semua Sudah Diimplementasikan
 
 ### E1. Akses tanpa Token
 > Coba akses endpoint yang membutuhkan auth (contoh: `GET /auth/me`) **TANPA** menyertakan Bearer Token.
