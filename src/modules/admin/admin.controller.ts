@@ -21,7 +21,7 @@ export const approveAdmin = async (req: Request, res: Response, next: NextFuncti
     const user = await adminService.updateAdminStatus(id, "approved");
     return res.status(200).json({ success: true, message: "Admin approved successfully", data: user });
   } catch (error: any) {
-    if (error.code === 'P2025') {
+    if (error.code === 'P2025' || error.message === 'Admin not found') {
       return res.status(404).json({ success: false, message: "Admin not found" });
     }
     next(error);
@@ -34,7 +34,7 @@ export const rejectAdmin = async (req: Request, res: Response, next: NextFunctio
     const user = await adminService.updateAdminStatus(id, "rejected");
     return res.status(200).json({ success: true, message: "Admin rejected successfully", data: user });
   } catch (error: any) {
-    if (error.code === 'P2025') {
+    if (error.code === 'P2025' || error.message === 'Admin not found') {
       return res.status(404).json({ success: false, message: "Admin not found" });
     }
     next(error);
@@ -47,7 +47,7 @@ export const deleteUser = async (req: Request, res: Response, next: NextFunction
     const result = await adminService.deleteAdminAccount(id);
     return res.status(200).json({ success: true, message: result.message });
   } catch (error: any) {
-    if (error.code === 'P2025') {
+    if (error.code === 'P2025' || error.message === 'Admin not found') {
       return res.status(404).json({ success: false, message: "Admin not found" });
     }
     next(error);
