@@ -52,6 +52,15 @@ export const updateAdminStatus = async (id: string, status: "approved" | "reject
     });
 
     await sendVerificationEmail(updatedUser.email, newCode);
+    
+    // Kembalikan verification code hanya saat development untuk memudahkan testing
+    if (env.NODE_ENV === "development") {
+      return {
+        ...updatedUser,
+        verification_code: newCode
+      };
+    }
+
     return updatedUser;
   }
 
