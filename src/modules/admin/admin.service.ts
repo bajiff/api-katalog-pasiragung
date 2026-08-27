@@ -83,9 +83,16 @@ export const updateAdminStatus = async (id: string, status: "approved" | "reject
 };
 
 export const deleteAdminAccount = async (id: string) => {
-  await prisma.user.delete({
+  const deletedUser = await prisma.user.delete({
     where: { id },
+    select: {
+      id: true,
+      name: true
+    }
   });
 
-  return { message: "Admin account deleted successfully" };
+  return { 
+    message: "Admin account deleted successfully",
+    data: deletedUser
+  };
 };

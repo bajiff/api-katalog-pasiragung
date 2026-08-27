@@ -45,7 +45,7 @@ export const deleteUser = async (req: Request, res: Response, next: NextFunction
   try {
     const { id } = req.params;
     const result = await adminService.deleteAdminAccount(id);
-    return res.status(200).json({ success: true, message: result.message });
+    return res.status(200).json({ success: true, message: result.message, data: result.data });
   } catch (error: any) {
     if (error.code === 'P2025' || error.message === 'Admin not found') {
       return res.status(404).json({ success: false, message: "Admin not found" });
