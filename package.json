@@ -5,7 +5,7 @@
   "scripts": {
     "postinstall": "prisma generate",
     "dev": "nodemon --exec tsx src/server.ts",
-    "build": "prisma generate && tsc && cp -r src/generated dist/",
+    "build": "prisma generate && tsc",
     "start": "node dist/server.js",
     "prisma:generate": "npx prisma generate",
     "prisma:migrate": "npx prisma migrate dev",
