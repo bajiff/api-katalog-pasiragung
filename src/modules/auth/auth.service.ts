@@ -192,7 +192,17 @@ export const forgotPassword = async (email: string) => {
     },
   });
 
-  return { message: "If the email is registered, a reset code will be sent." };
+  const responseData: Record<string, any> = {
+    message: "If the email is registered, a reset code will be sent.",
+  };
+
+  // [DEV ONLY] Expose reset code in response for easier testing without email.
+  // TODO (DEPLOY): Remove the line below before deploying to production.
+  if (env.NODE_ENV === "development") {
+    responseData.dev_reset_code = newCode;
+  }
+
+  return responseData;
 };
 
 export const resetPassword = async (data: any) => {
