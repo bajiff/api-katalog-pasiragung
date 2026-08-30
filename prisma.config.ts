@@ -1,5 +1,4 @@
-import "dotenv/config";
-import { defineConfig, env } from "prisma/config";
+import { defineConfig } from "prisma/config";
 
 export default defineConfig({
   // Lokasi schema utama
@@ -10,9 +9,6 @@ export default defineConfig({
     path: "prisma/migrations",
     seed: "tsx prisma/seed.ts",
   },
-
-  // Database URL
-  datasource: {
-    url: env("DATABASE_URL"),
-  },
+  // Catatan: DATABASE_URL dikonfigurasi via env var di runtime (src/config/prisma.ts)
+  // Tidak perlu didefinisikan di sini agar `prisma generate` bisa berjalan tanpa env var
 });
