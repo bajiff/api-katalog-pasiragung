@@ -1,13 +1,39 @@
+# --- Dependencies ---
 node_modules/
+
+# --- Build Output ---
 dist/
+
+# --- Prisma Generated Client ---
 src/generated/
+
+# --- Environment Variables (RAHASIA - JANGAN DI-COMMIT!) ---
 .env
 .env*.local
-coverage/
-.DS_Store
-*.log
 
-# .gitignore
+# --- Test & Coverage ---
+coverage/
+
+# --- OS Files ---
+.DS_Store
+Thumbs.db
+
+# --- Log Files ---
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# --- Editor & IDE ---
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# --- Internal Documentation (Private) ---
 E-Katalog UMKM Desa Pasiragung Software Development Life Cycle (SDLC).md
 E-Katalog UMKM Desa Pasiragung Software Requirements Specification (SRS).md
 E-Katalog UMKMDesa Pasiragung Product Requirements Document (PRD).md
