@@ -4,6 +4,9 @@ node_modules/
 # --- Build Output ---
 dist/
 
+# --- Prisma Generated (safety) ---
+src/generated/
+
 # --- Environment Variables (RAHASIA - JANGAN DI-COMMIT!) ---
 .env
 .env*.local
